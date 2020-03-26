@@ -24,6 +24,10 @@
 
 - [ ] 主要进行一些维护工作，新功能视情况增加。
 
+## :roller_coaster: 演示 Demo
+
+![demo1](https://raw.githubusercontent.com/Sec-ant/MovieInfoGen/master/assets/demo/gif/demo1.gif)
+
 ## :hammer_and_wrench: 安装 Installation
 
 请到 [Greasy Fork](https://greasyfork.org/zh-CN/scripts/38878-%E7%94%B5%E5%BD%B1%E4%BF%A1%E6%81%AF%E6%9F%A5%E8%AF%A2%E8%84%9A%E6%9C%AC) 页面，配合 [Tampermonkey](https://www.tampermonkey.net/) 浏览器扩展安装使用。
