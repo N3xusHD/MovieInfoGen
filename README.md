@@ -2,13 +2,14 @@
 
 ## :book: 介绍 Introduction
 
-本脚本用于在豆瓣电影页面 https://movie.douban.com/subject/{DoubanID}/ 获取电影信息，多用于各大 PT 站点发布种子填写介绍。与主流格式（PT-Gen）基本一致。
+本脚本用于在豆瓣电影页面（如：[肖申克的救赎 (豆瓣)](https://movie.douban.com/subject/1292052/)）获取电影信息，多用于各大 PT 站点发布种子填写介绍。与主流格式（PT-Gen）基本一致。
 
 ## :balloon: 特性 Features
 
 - 纯前端处理，无托管服务器，本获取信息服务无访问次数限制；
 
 - 使用 [IMDb 官方插件接口](https://www.imdb.com/plugins)（支持 JSONP 跨域获取，虽然用户脚本可以不考虑跨域问题）获取评分，相比于 OMDb，无需 API Key，分数获取迅速，更新及时（1次/24h）；
+  
   `https://p.media-imdb.com/static-content/documents/v1/title/tt${ID}/ratings%3Fjsonp=imdb.rating.run:imdb.api.title.ratings/data.json`
 
 - 考虑到豆瓣的 API 极其不稳定并有下线的可能性，本脚本尽量避免了对豆瓣 API 的调用，以避免对其过多的依赖；
