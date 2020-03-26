@@ -2,7 +2,7 @@
 
 ## :book: 介绍 Introduction
 
-本脚本用于在豆瓣电影页面（https://www.douban.com/subject/{DoubanID}/）获取电影信息，多用于各大PT站点发布种子填写介绍。与主流格式（PT-Gen）基本一致。
+本脚本用于在豆瓣电影页面 https://movie.douban.com/subject/{DoubanID}/ 获取电影信息，多用于各大 PT 站点发布种子填写介绍。与主流格式（PT-Gen）基本一致。
 
 ## :balloon: 特性 Features
 
@@ -21,7 +21,7 @@
 
 ## :dart: 待办 TODOs
 
-- [ ] 主要进行一些维护工作，新功能酌情增加。
+- [ ] 主要进行一些维护工作，新功能视情况增加。
 
 ## :hammer_and_wrench: 安装 Installation
 
