@@ -939,8 +939,8 @@
        '★'.repeat(Math.floor(temp / 2)) + (temp % 2 ? '☆' : '') + '␣'.repeat(5 - Math.ceil(temp / 2))
        }\n◎豆瓣评分　${info.DoubanScore.rating}/10 from ${addComma(info.DoubanScore.ratingCount)} users\n` : '') +
       (info.DoubanID ? `◎豆瓣链接　https://movie.douban.com/subject/${info.DoubanID}/\n` : '') +
-      ((info.duration &&
-        info.duration.length) ? '◎片　　长　' + info.duration.join(' / ') + '\n' : '') +
+      ((info.durations &&
+        info.durations.length) ? '◎片　　长　' + info.durations.join(' / ') + '\n' : '') +
       (info.episodeDuration ? '◎单集片长　' + info.episodeDuration + '\n' : '') +
       (info.episodeCount ? '◎集　　数　' + info.episodeCount + '\n' : '') +
       (info.celebrities ? Object.entries(info.celebrities).map(e => {
