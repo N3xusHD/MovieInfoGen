@@ -931,7 +931,7 @@
         info.IMDbScore.rating) ? `◎IMDb评星  ${
        temp = Math.round(info.IMDbScore.rating),
        '★'.repeat(temp) + '␣'.repeat(10 - temp)
-       }\n◎IMDb评分  ${info.IMDbScore.rating}/10 from ${addComma(info.IMDbScore.ratingCount)} users\n` : '') +
+       }\n◎IMDb评分  ${Number(info.IMDbScore.rating).toFixed(1)}/10 from ${addComma(info.IMDbScore.ratingCount)} users\n` : '') +
       (info.IMDbID ? `◎IMDb链接  https://www.imdb.com/title/tt${info.IMDbID}/\n` : '') +
       ((info.DoubanScore &&
        info.DoubanScore.rating) ? `◎豆瓣评星　${
