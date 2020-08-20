@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name               电影信息查询脚本
 // @description        Fetch Douban Description, IMDb information for PT upload
-// @version            3.6
+// @version            3.7
 // @author             Secant(TYT@NexusHD)
 // @include            http*://movie.douban.com/subject/*
 // @require            https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js
