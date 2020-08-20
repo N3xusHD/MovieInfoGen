@@ -13,6 +13,7 @@
   `https://p.media-imdb.com/static-content/documents/v1/title/tt${ID}/ratings%3Fjsonp=imdb.rating.run:imdb.api.title.ratings/data.json`
 
 - 考虑到豆瓣的 API 极其不稳定并有下线的可能性，本脚本尽量避免了对豆瓣 API 的调用，以避免对其过多的依赖；
+
   最新情况：[豆瓣 API 疑似彻底下线](https://v2ex.com/t/699393)，所有已知的公开 API Key 均报错：`code: 109, msg: "invalid_credencial2"`
 
 - 部分豆瓣条目需用户登录后才能访问，登录豆瓣账户后使用本脚本即可获取相应条目信息；
