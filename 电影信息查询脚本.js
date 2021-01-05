@@ -865,11 +865,13 @@
       }),
 
       // MTime
+      /*
       MtimeSearch(titles.chineseTitle, year)
         .then(e => (e ? getBehindTheScene(e.MovieId) : null))
         .then(e => {
           behindTheScene = e;
         })
+      */
     );
 
     await Promise.all(concurrentFetches);
