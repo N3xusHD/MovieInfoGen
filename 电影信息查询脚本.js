@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name               电影信息查询脚本
 // @description        Fetch Douban Description, IMDb information for PT upload
-// @version            3.7.1
+// @version            3.7.2
 // @author             Secant(TYT@NexusHD)
 // @include            http*://movie.douban.com/subject/*
 // @require            https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js
@@ -388,9 +388,10 @@
       return new Promise(resolve => {
         GM_xmlhttpRequest({
           method: 'GET',
-          url: `https://p.media-imdb.com/static-content/documents/v1/title/tt${ID}/ratings%3Fjsonp=imdb.rating.run:imdb.api.title.ratings/data.json`,
+          // p.media-imdb.com: HTTPS -> HTTP
+          url: `http://p.media-imdb.com/static-content/documents/v1/title/tt${ID}/ratings%3Fjsonp=imdb.rating.run:imdb.api.title.ratings/data.json`,
           headers: {
-            referrer: 'https://p.media-imdb.com/'
+            referrer: 'http://p.media-imdb.com/'
           },
           timout: timeout,
           onload: x => {
