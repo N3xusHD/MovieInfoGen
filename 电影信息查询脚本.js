@@ -368,16 +368,19 @@
         if (resp.ok) {
           const htmlString = await resp.text();
           return $$(htmlString)
-            .find('#info a[href^="https://www.imdb.com/title/tt"]')[0]
-            .innerText.match(/tt(\d+)/)[1];
+            .find("#info .pl:contains(\"IMDb:\")")[0]
+            .nextSibling
+            .textContent
+            .match(/tt(\d+)/)[1];
         } else {
           console.warn(resp);
           return null;
         }
       } else {
-        return $(
-          '#info a[href^="https://www.imdb.com/title/tt"]'
-        )[0].innerText.match(/tt(\d+)/)[1];
+        return $("#info .pl:contains(\"IMDb:\")")[0]
+          .nextSibling
+          .textContent
+          .match(/tt(\d+)/)[1];
       }
     } catch (e) {
       return null;
