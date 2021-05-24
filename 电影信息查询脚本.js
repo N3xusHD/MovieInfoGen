@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name               电影信息查询脚本
 // @description        Fetch Douban Description, IMDb information for PT upload
-// @version            3.7.5
+// @version            3.7.6
 // @author             Secant(TYT@NexusHD)
 // @include            http*://movie.douban.com/subject/*
 // @require            https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js
@@ -10,12 +10,8 @@
 // @contributionAmount 10
 // @namespace          https://greasyfork.org/users/152136
 // @grant              GM_xmlhttpRequest
-// @grant              GM_getValue
-// @grant              GM_setValue
-// @connect            my.mtime.com
-// @connect            movie.mtime.com
+// @connect            front-gateway.mtime.cn
 // @connect            api.douban.com
-// @connect            p.media-imdb.com
 // @connect            proxy.secant.workers.dev
 // ==/UserScript==
 
@@ -23,75 +19,97 @@
 
 (function ($) {
   const a = [
-    'MGIyYmRlZGE0M2I1Njg4OTI=',
-    'MGRhZDU1MWVjMGY4NGVkMDI=',
-    'OTA3ZmY1YzQyZThlYzcw',
-    'MDI2NDZkM2ZiNjlhNTJmZjA=',
-    'MTgzOWM4ZWNiMjAzOTli',
-    'NzJkNDdiZjIzY2VmOGZk',
-    'OWVjYmI1MzQ0MjUyYTRh',
-    'MGRmOTkzYzY2YzBjNjM2ZTI='
+    "MGIyYmRlZGE0M2I1Njg4OTI=",
+    "MGRhZDU1MWVjMGY4NGVkMDI=",
+    "OTA3ZmY1YzQyZThlYzcw",
+    "MDI2NDZkM2ZiNjlhNTJmZjA=",
+    "MTgzOWM4ZWNiMjAzOTli",
+    "NzJkNDdiZjIzY2VmOGZk",
+    "OWVjYmI1MzQ0MjUyYTRh",
+    "MGRmOTkzYzY2YzBjNjM2ZTI=",
   ];
   (function (b, e) {
     const f = function (g) {
       while (--g) {
-        b['push'](b['shift']());
+        b["push"](b["shift"]());
       }
     };
     f(++e);
-  }(a, 0x1e4));
+  })(a, 0x1e4);
   const b = function (c, d) {
     c = c - 0x0;
     let e = a[c];
-    if (b['pbhcos'] === undefined) {
+    if (b["pbhcos"] === undefined) {
       (function () {
-        const g = typeof window !== 'undefined' ? window : typeof process === 'object' && typeof require === 'function' && typeof global === 'object' ? global : this;
-        const h = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-        g['atob'] || (g['atob'] = function (i) {
-          const j = String(i)['replace'](/=+$/, '');
-          let k = '';
-          for (let l = 0x0, m, n, o = 0x0; n = j['charAt'](o++); ~n && (m = l % 0x4 ? m * 0x40 + n : n, l++ % 0x4) ? k += String['fromCharCode'](0xff & m >> (-0x2 * l & 0x6)) : 0x0) {
-            n = h['indexOf'](n);
-          }
-          return k;
-        });
-      }());
-      b['ICpnUS'] = function (g) {
+        const g =
+          typeof window !== "undefined"
+            ? window
+            : typeof process === "object" &&
+              typeof require === "function" &&
+              typeof global === "object"
+            ? global
+            : this;
+        const h =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+        g["atob"] ||
+          (g["atob"] = function (i) {
+            const j = String(i)["replace"](/=+$/, "");
+            let k = "";
+            for (
+              let l = 0x0, m, n, o = 0x0;
+              (n = j["charAt"](o++));
+              ~n && ((m = l % 0x4 ? m * 0x40 + n : n), l++ % 0x4)
+                ? (k += String["fromCharCode"](
+                    0xff & (m >> ((-0x2 * l) & 0x6))
+                  ))
+                : 0x0
+            ) {
+              n = h["indexOf"](n);
+            }
+            return k;
+          });
+      })();
+      b["ICpnUS"] = function (g) {
         const h = atob(g);
         let j = [];
-        for (let k = 0x0, l = h['length']; k < l; k++) {
-          j += '%' + ('00' + h['charCodeAt'](k)['toString'](0x10))['slice'](-0x2);
+        for (let k = 0x0, l = h["length"]; k < l; k++) {
+          j +=
+            "%" + ("00" + h["charCodeAt"](k)["toString"](0x10))["slice"](-0x2);
         }
         return decodeURIComponent(j);
       };
-      b['Snsmje'] = {};
-      b['pbhcos'] = !![];
+      b["Snsmje"] = {};
+      b["pbhcos"] = !![];
     }
-    const f = b['Snsmje'][c];
+    const f = b["Snsmje"][c];
     if (f === undefined) {
-      e = b['ICpnUS'](e);
-      b['Snsmje'][c] = e;
+      e = b["ICpnUS"](e);
+      b["Snsmje"][c] = e;
     } else {
       e = f;
     }
     return e;
   };
   const DoubanAPIKeys = [
-    b('0x7') + b('0x1'),
-    b('0x5') + b('0x6'),
-    b('0x4') + b('0x0'),
-    b('0x3') + b('0x2')
+    b("0x7") + b("0x1"),
+    b("0x5") + b("0x6"),
+    b("0x4") + b("0x0"),
+    b("0x3") + b("0x2"),
   ];
   const TIMEOUT = 6000;
   const $toggle = $('<span class="pl">描述文本:</span>');
   const $infoGen = $('<a href="javascript:void(0)">获取</a>');
   const $message = $('<span style="display:none;padding:0px 5px"></span>');
   const $copyPaste = $('<textarea type="text" rows="0" cols="0"/>').css({
-    position: 'absolute',
+    position: "absolute",
     top: 0,
-    left: -9999
+    left: -9999,
   });
-
+  function decodeEntities(encodedString) {
+    var textArea = document.createElement("textarea");
+    textArea.innerHTML = encodedString;
+    return textArea.value;
+  }
   function addComma(x) {
     var parts = x.toString().split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -100,13 +118,13 @@
   function jsCopy(e) {
     e.select();
     try {
-      return document.execCommand('copy');
+      return document.execCommand("copy");
     } catch (err) {
       return false;
     }
   }
   function $$(htmlString) {
-    return $(htmlString, document.implementation.createHTMLDocument('virtual'));
+    return $(htmlString, document.implementation.createHTMLDocument("virtual"));
   }
   $.fn.extend({
     nextNodeUtil: function (selector) {
@@ -124,13 +142,14 @@
       } catch (e) {
         return $(siblings);
       }
-    }
+    },
   });
   function getPoster() {
     try {
-      return $('#mainpic img')[0].src.replace(
+      return $("#mainpic img")[0].src.replace(
         /^.+(p\d+).+$/,
-        (_, p1) => `https://img9.doubanio.com/view/photo/l_ratio_poster/public/${p1}.jpg`
+        (_, p1) =>
+          `https://img9.doubanio.com/view/photo/l_ratio_poster/public/${p1}.jpg`
       );
     } catch (e) {
       return null;
@@ -138,22 +157,20 @@
   }
   function getTitles() {
     let isChinese = false;
-    const chineseTitle = document.title.replace(/\(豆瓣\)$/, '').trim();
+    const chineseTitle = document.title.replace(/\(豆瓣\)$/, "").trim();
     const originalTitle =
-      $('#content h1>span[property]')
-        .text()
-        .replace(chineseTitle, '')
-        .trim() || ((isChinese = true), chineseTitle);
+      $("#content h1>span[property]").text().replace(chineseTitle, "").trim() ||
+      ((isChinese = true), chineseTitle);
     try {
       let akaTitles = $('#info span.pl:contains("又名")')[0]
         .nextSibling.textContent.trim()
-        .split(' / ');
+        .split(" / ");
       const transTitle = isChinese
-        ? akaTitles.find(e => {
-          return e.match(/[a-z]/i);
-        }) || chineseTitle
+        ? akaTitles.find((e) => {
+            return e.match(/[a-z]/i);
+          }) || chineseTitle
         : chineseTitle;
-      const priority = e => {
+      const priority = (e) => {
         if (e === transTitle) {
           return 0;
         }
@@ -167,15 +184,15 @@
       };
       akaTitles = akaTitles
         .sort((a, b) => priority(a) - priority(b))
-        .filter(e => e !== transTitle);
+        .filter((e) => e !== transTitle);
       return [
         {
           chineseTitle: chineseTitle,
           originalTitle: originalTitle,
           translatedTitle: transTitle,
-          alsoKnownAsTitles: akaTitles
+          alsoKnownAsTitles: akaTitles,
         },
-        isChinese
+        isChinese,
       ];
     } catch (e) {
       return [
@@ -183,24 +200,20 @@
           chineseTitle: chineseTitle,
           originalTitle: originalTitle,
           translatedTitle: chineseTitle,
-          alsoKnownAsTitles: []
+          alsoKnownAsTitles: [],
         },
-        isChinese
+        isChinese,
       ];
     }
   }
   function getYear() {
-    return parseInt(
-      $('#content>h1>span.year')
-        .text()
-        .slice(1, -1)
-    );
+    return parseInt($("#content>h1>span.year").text().slice(1, -1));
   }
   function getRegions() {
     try {
       return $('#info span.pl:contains("制片国家/地区")')[0]
         .nextSibling.textContent.trim()
-        .split(' / ');
+        .split(" / ");
     } catch (e) {
       return [];
     }
@@ -209,7 +222,7 @@
     try {
       return $('#info span[property="v:genre"]')
         .toArray()
-        .map(e => e.innerText.trim());
+        .map((e) => e.innerText.trim());
     } catch (e) {
       return [];
     }
@@ -218,7 +231,7 @@
     try {
       return $('#info span.pl:contains("语言")')[0]
         .nextSibling.textContent.trim()
-        .split(' / ');
+        .split(" / ");
     } catch (e) {
       return [];
     }
@@ -227,7 +240,7 @@
     try {
       return $('#info span[property="v:initialReleaseDate"]')
         .toArray()
-        .map(e => e.innerText.trim())
+        .map((e) => e.innerText.trim())
         .sort((a, b) => new Date(a) - new Date(b));
     } catch (e) {
       return [];
@@ -236,12 +249,12 @@
   function getDurations() {
     try {
       return $('span[property="v:runtime"]')
-        .nextNodeUtil('br')
+        .nextNodeUtil("br")
         .toArray()
-        .map(e => e.textContent)
-        .join('')
+        .map((e) => e.textContent)
+        .join("")
         .trim()
-        .split(' / ');
+        .split(" / ");
     } catch (e) {
       return [];
     }
@@ -265,22 +278,22 @@
     }
   }
   function getTags() {
-    return $('div.tags-body>a')
+    return $("div.tags-body>a")
       .toArray()
-      .map(e => e.textContent);
+      .map((e) => e.textContent);
   }
   function getDoubanID() {
     return window.location.href.match(/subject\/(\d+)/)[1];
   }
   function getDoubanScore() {
-    const $interest = $('#interest_sectl');
+    const $interest = $("#interest_sectl");
     const ratingAverage = parseFloat(
       $interest.find('[property="v:average"]').text()
     );
     const ratingVotes = parseInt($interest.find('[property="v:votes"]').text());
     const ratingHist = Object.fromEntries(
       $interest
-        .find('.ratings-on-weight .rating_per')
+        .find(".ratings-on-weight .rating_per")
         .toArray()
         .map((e, i) => [5 - i, parseFloat(e.textContent.slice(0, -1)) / 100])
     );
@@ -288,21 +301,24 @@
       rating: ratingAverage,
       ratingCount: ratingVotes,
       ratingHistograms: {
-        'Douban Users': {
+        "Douban Users": {
           aggregateRating: ratingAverage,
-          demographic: 'Douban Users',
+          demographic: "Douban Users",
           histogram: ratingHist,
-          totalRatings: ratingVotes
-        }
-      }
+          totalRatings: ratingVotes,
+        },
+      },
     };
   }
   function getDescription() {
     try {
-      return Array.from($('#link-report>[property="v:summary"],#link-report>span.all.hidden')[0].childNodes)
-        .filter(e => e.nodeType === 3)
-        .map(e => e.textContent.trim())
-        .join('\n');
+      return Array.from(
+        $('#link-report>[property="v:summary"],#link-report>span.all.hidden')[0]
+          .childNodes
+      )
+        .filter((e) => e.nodeType === 3)
+        .map((e) => e.textContent.trim())
+        .join("\n");
     } catch (e) {
       return null;
     }
@@ -315,16 +331,16 @@
     if (ID) {
       const index = Math.floor(Math.random() * apikeys.length);
       const [apikey] = apikeys.splice(index, 1);
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         GM_xmlhttpRequest({
-          method: 'GET',
+          method: "GET",
           url: `https://api.douban.com/v2/movie/${ID}?apikey=${apikey}`,
           headers: {
-            referrer: 'http://api.douban.com/'
+            referrer: "http://api.douban.com/",
           },
-          responseType: 'json',
+          responseType: "json",
           timout: timeout,
-          onload: x => {
+          onload: (x) => {
             const e = x.response;
             if (e.code === 104 && apikeys.length > 0) {
               console.warn(e);
@@ -336,14 +352,14 @@
               resolve(e);
             }
           },
-          ontimeout: e => {
+          ontimeout: (e) => {
             console.warn(e);
             resolve(null);
           },
-          onerror: e => {
+          onerror: (e) => {
             console.warn(e);
             resolve(null);
-          }
+          },
         });
       });
     } else {
@@ -351,37 +367,34 @@
     }
   }
   async function getIMDbID(timeout = TIMEOUT) {
-    const $season = $('#season');
+    const $season = $("#season");
     try {
-      if ($season[0] && $season.find(':selected')[0].innerText !== '1') {
-        const DoubanID = $season.find('option:first-of-type').val();
+      if ($season[0] && $season.find(":selected")[0].innerText !== "1") {
+        const DoubanID = $season.find("option:first-of-type").val();
         const resp = await Promise.race([
           fetch(`https://movie.douban.com/subject/${DoubanID}`),
-          new Promise(resolve =>
+          new Promise((resolve) =>
             setTimeout(() => {
               resolve({
                 ok: false,
-                message: `fetch ${DoubanID} douban page time out`
+                message: `fetch ${DoubanID} douban page time out`,
               });
             }, timeout)
-          )
+          ),
         ]);
         if (resp.ok) {
           const htmlString = await resp.text();
           return $$(htmlString)
-            .find("#info .pl:contains(\"IMDb:\")")[0]
-            .nextSibling
-            .textContent
-            .match(/tt(\d+)/)[1];
+            .find('#info .pl:contains("IMDb:")')[0]
+            .nextSibling.textContent.match(/tt(\d+)/)[1];
         } else {
           console.warn(resp);
           return null;
         }
       } else {
-        return $("#info .pl:contains(\"IMDb:\")")[0]
-          .nextSibling
-          .textContent
-          .match(/tt(\d+)/)[1];
+        return $(
+          '#info .pl:contains("IMDb:")'
+        )[0].nextSibling.textContent.match(/tt(\d+)/)[1];
       }
     } catch (e) {
       return null;
@@ -389,9 +402,9 @@
   }
   async function getIMDbScore(ID, timeout = TIMEOUT) {
     if (ID) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         GM_xmlhttpRequest({
-          method: 'GET',
+          method: "GET",
           // p.media-imdb.com: HTTPS -> HTTP
           //url: `http://p.media-imdb.com/static-content/documents/v1/title/tt${ID}/ratings%3Fjsonp=imdb.rating.run:imdb.api.title.ratings/data.json`,
           url: `https://proxy.secant.workers.dev/worker/proxy/p.media-imdb.com/static-content/documents/v1/title/tt${ID}/ratings%253Fjsonp=imdb.rating.run:imdb.api.title.ratings/data.json`,
@@ -399,7 +412,7 @@
           //  referrer: 'http://p.media-imdb.com/'
           //},
           timout: timeout,
-          onload: x => {
+          onload: (x) => {
             try {
               const e = JSON.parse(x.responseText.slice(16, -1));
               resolve(e.resource);
@@ -408,14 +421,14 @@
               resolve(null);
             }
           },
-          ontimeout: e => {
+          ontimeout: (e) => {
             console.warn(e);
             resolve(null);
           },
-          onerror: e => {
+          onerror: (e) => {
             console.warn(e);
             resolve(null);
-          }
+          },
         });
       });
     } else {
@@ -426,45 +439,34 @@
     if (ID) {
       const resp = await Promise.race([
         fetch(`https://movie.douban.com/subject/${ID}/awards`),
-        new Promise(resolve =>
+        new Promise((resolve) =>
           setTimeout(() => {
             resolve({
               ok: false,
-              message: `fetch ${ID} douban awards time out`
+              message: `fetch ${ID} douban awards time out`,
             });
           }, timeout)
-        )
+        ),
       ]);
       if (resp.ok) {
         const htmlString = await resp.text();
         return $$(htmlString)
-          .find('div.awards')
+          .find("div.awards")
           .toArray()
-          .map(e => {
-            const $title = $(e).find('.hd>h2');
-            const $awards = $(e).find('.award');
+          .map((e) => {
+            const $title = $(e).find(".hd>h2");
+            const $awards = $(e).find(".award");
             return {
-              name: $title
-                .find('a')
-                .text()
-                .trim(),
-              year: parseInt(
-                $title
-                  .find('.year')
-                  .text()
-                  .match(/\d+/)[0]
-              ),
-              awards: $awards.toArray().map(e => ({
-                name: $(e)
-                  .find('li:first-of-type')
-                  .text()
-                  .trim(),
+              name: $title.find("a").text().trim(),
+              year: parseInt($title.find(".year").text().match(/\d+/)[0]),
+              awards: $awards.toArray().map((e) => ({
+                name: $(e).find("li:first-of-type").text().trim(),
                 people: $(e)
-                  .find('li:nth-of-type(2)')
+                  .find("li:nth-of-type(2)")
                   .text()
-                  .split('/')
-                  .map(e => e.trim())
-              }))
+                  .split("/")
+                  .map((e) => e.trim()),
+              })),
             };
           });
       } else {
@@ -478,14 +480,14 @@
     if (ID) {
       const fetchCeleb = await Promise.race([
         fetch(`https://movie.douban.com/subject/${ID}/celebrities`),
-        new Promise(resolve =>
+        new Promise((resolve) =>
           setTimeout(() => {
             resolve({
               ok: false,
-              message: `fetch ${ID} douban celebrities time out`
+              message: `fetch ${ID} douban celebrities time out`,
             });
           }, timeout)
-        )
+        ),
       ]);
       const fetchAPI = DoubanAPI(ID);
       const respCeleb = await fetchCeleb;
@@ -493,52 +495,52 @@
       if (respCeleb.ok) {
         const htmlString = await respCeleb.text();
         const entries = $$(htmlString)
-        .find('#celebrities>div.list-wrapper')
-        .toArray()
-        .map(e => {
-          const [positionChinese, positionForeign] = $(e)
-          .find('h2')
-          .text()
-          .match(/([^ ]*)(?:$| )(.*)/)
-          .slice(1, 3);
-          const people = $(e)
-          .find('li.celebrity')
+          .find("#celebrities>div.list-wrapper")
           .toArray()
-          .map(e => {
-            let [nameChinese, nameForeign] = $(e)
-            .find('.info>.name')
-            .text()
-            .match(/([^ ]*)(?:$| )(.*)/)
-            .slice(1, 3);
-            if (!nameChinese.match(/[\u4E00-\u9FCC]/)) {
-              nameForeign = nameChinese + ' ' + nameForeign;
-              nameChinese = null;
-            }
-            const [roleChinese, roleForeign, character] = $(e)
-            .find('.info>.role')
-            .text()
-            .match(/([^ ]*)(?:$| )([^(]*)(?:$| )(.*)/)
-            .slice(1, 4);
-            return {
-              name: {
-                chs: nameChinese,
-                for: nameForeign
+          .map((e) => {
+            const [positionChinese, positionForeign] = $(e)
+              .find("h2")
+              .text()
+              .match(/([^ ]*)(?:$| )(.*)/)
+              .slice(1, 3);
+            const people = $(e)
+              .find("li.celebrity")
+              .toArray()
+              .map((e) => {
+                let [nameChinese, nameForeign] = $(e)
+                  .find(".info>.name")
+                  .text()
+                  .match(/([^ ]*)(?:$| )(.*)/)
+                  .slice(1, 3);
+                if (!nameChinese.match(/[\u4E00-\u9FCC]/)) {
+                  nameForeign = nameChinese + " " + nameForeign;
+                  nameChinese = null;
+                }
+                const [roleChinese, roleForeign, character] = $(e)
+                  .find(".info>.role")
+                  .text()
+                  .match(/([^ ]*)(?:$| )([^(]*)(?:$| )(.*)/)
+                  .slice(1, 4);
+                return {
+                  name: {
+                    chs: nameChinese,
+                    for: nameForeign,
+                  },
+                  role: {
+                    chs: roleChinese,
+                    for: roleForeign,
+                  },
+                  character: character.replace(/[()]/g, ""),
+                };
+              });
+            return [
+              positionForeign.toLowerCase(),
+              {
+                position: positionChinese,
+                people: people,
               },
-              role: {
-                chs: roleChinese,
-                for: roleForeign
-              },
-              character: character.replace(/[()]/g, '')
-            };
+            ];
           });
-          return [
-            positionForeign.toLowerCase(),
-            {
-              position: positionChinese,
-              people: people
-            }
-          ];
-        });
         if (entries.length) {
           jsonCeleb = Object.fromEntries(entries);
         } else {
@@ -554,40 +556,40 @@
             .match(/([^ ]*)(?:$| )(.*)/)
             .slice(1, 3);
           if (!nameChinese.match(/[\u4E00-\u9FCC]/)) {
-            nameForeign = nameChinese + ' ' + nameForeign;
+            nameForeign = nameChinese + " " + nameForeign;
             nameChinese = null;
           }
           return {
             name: {
               chs: nameChinese,
-              for: nameForeign
+              for: nameForeign,
             },
             role: {
               chs: chsRole,
-              for: forRole
+              for: forRole,
             },
-            character: ''
+            character: "",
           };
         };
         jsonAPI = {
           director: {
-            position: '导演',
-            people: (respAPI.attrs.director || []).map(e =>
-              splitName(e, '导演', 'Director')
-            )
+            position: "导演",
+            people: (respAPI.attrs.director || []).map((e) =>
+              splitName(e, "导演", "Director")
+            ),
           },
           cast: {
-            position: '演员',
-            people: (respAPI.attrs.cast || []).map(e =>
-              splitName(e, '演员', 'Actor/Actress')
-            )
+            position: "演员",
+            people: (respAPI.attrs.cast || []).map((e) =>
+              splitName(e, "演员", "Actor/Actress")
+            ),
           },
           writer: {
-            position: '编剧',
-            people: (respAPI.attrs.writer || []).map(e =>
-              splitName(e, '编剧', 'Writer')
-            )
-          }
+            position: "编剧",
+            people: (respAPI.attrs.writer || []).map((e) =>
+              splitName(e, "编剧", "Writer")
+            ),
+          },
         };
       } else {
         jsonAPI = null;
@@ -597,18 +599,17 @@
       } else if (jsonAPI === null) {
         return jsonCeleb;
       } else {
-        ['director', 'cast', 'writer'].forEach(prop => {
+        ["director", "cast", "writer"].forEach((prop) => {
           if (jsonCeleb[prop]) {
-            jsonAPI[prop].people.forEach(e => {
-              const flag = jsonCeleb[prop].people.filter(f => {
+            jsonAPI[prop].people.forEach((e) => {
+              const flag = jsonCeleb[prop].people.filter((f) => {
                 return f.name.for === e.name.for;
               });
               if (flag.length === 0) {
                 jsonCeleb[prop].people.push(e);
               }
             });
-          }
-          else {
+          } else {
             jsonCeleb[prop] = jsonAPI[prop];
           }
         });
@@ -622,207 +623,79 @@
   async function MtimeSearch(
     chineseTitle,
     year,
-    count = 10,
-    timeout = TIMEOUT + 2000 //mtime search is slow, so tolerance is higher
+    timeout = TIMEOUT + 2000 //mtime search is slow?
   ) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       GM_xmlhttpRequest({
-        method: 'POST',
-        url: 'http://my.mtime.com/Service/Movie.mc',
+        method: "GET",
+        url: `https://front-gateway.mtime.cn/mtime-search/search/unionSearch?keyword=${encodeURIComponent(
+          chineseTitle
+        )}`,
         headers: {
-          'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+          "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
         },
-        data: [
-          'Ajax_CallBack=true',
-          'Ajax_CallBackType=Mtime.MemberCenter.Pages.MovieService',
-          'Ajax_CallBackMethod=GetSearchMoviesByTitle',
-          `Ajax_CallBackArgument0=${encodeURIComponent(chineseTitle)}`,
-          `Ajax_CallBackArgument1=${count}`
-        ].join('&'),
-        responseType: 'json',
+        responseType: "json",
         timeout: timeout,
-        onload: x => {
+        onload: (x) => {
           const e = x.response;
-          if (e.error) {
+          try {
+            resolve(
+              e.data.movies.find((movie) => {
+                const titles = movie.titleOthersCn;
+                titles.unshift(movie.name, movie.nameEn);
+                if (year !== movie.year && year !== movie.rYear) {
+                  return false;
+                }
+                if (titles.some((title) => chineseTitle.includes(title))) {
+                  return true;
+                }
+                return false;
+              }) || null
+            );
+          } catch (e) {
             console.warn(e);
             resolve(null);
-          } else {
-            resolve(
-              e.value.filter(e => {
-                return chineseTitle.includes(e.TitleCn) && e.Year == year;
-              })[0] || null
-            );
           }
         },
-        ontimeout: e => {
+        ontimeout: (e) => {
           console.warn(e);
           resolve(null);
         },
-        onerror: e => {
+        onerror: (e) => {
           console.warn(e);
           resolve(null);
-        }
+        },
       });
     });
   }
   // ERROR 521 is handled. (generate cookies on the spot)
-  async function getBehindTheScene(ID, cookies = GM_getValue('MtimeCookie', ''), timeout = TIMEOUT) {
+  async function getBehindTheScene(ID, timeout = TIMEOUT) {
     if (ID) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         GM_xmlhttpRequest({
-          method: 'GET',
-          url: `http://movie.mtime.com/${ID}/behind_the_scene.html`,
-          cookie: cookies,
+          method: "GET",
+          url: `https://front-gateway.mtime.cn/library/movie/extendDetail.api?movieId=${ID}`,
+          headers: {
+            "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+          },
+          responseType: "json",
           timeout: timeout,
-          onload: x => {
-            if (x.status === 200) {
-              GM_setValue('MtimeCookie', cookies);
-              const e = x.responseText;
-              resolve(
-                Object.fromEntries(
-                  $$(e)
-                    .find('.revealed_modle')
-                    .toArray()
-                    .map((e, i) => {
-                      let content, type;
-                      const wrapper = $(e)
-                        .children()
-                        .filter('[class^="revealed_"]');
-                      switch (wrapper.attr('class')) {
-                        case 'revealed_list':
-                          content = $(e)
-                            .find('dl.revealed_list>dd')
-                            .toArray()
-                            .map((e, i) =>
-                              e.innerText
-                                .trim()
-                                .replace(new RegExp(`^${i + 1}`), '')
-                            );
-                          type = 'list';
-                          break;
-                        case 'revealed_lines':
-                          content = $(e)
-                            .find('div.revealed_lines>dl>dd')
-                            .toArray()
-                            .map((e, i) => {
-                              $(e)
-                                .find('br')
-                                .before(document.createTextNode('\n'))
-                                .remove();
-                              return e.innerText.trim();
-                            });
-                          type = 'lines';
-                          if (content.length === 0) {
-                            content = $(e)
-                              .find(
-                                'div.revealed_album>div.revealed_album_list li'
-                              )
-                              .toArray()
-                              .map(
-                                (e, i) =>
-                                  `${$(e).attr('title')}：${$(e).attr(
-                                    'imgabstract'
-                                  )}`
-                              );
-                            type = 'album';
-                          }
-                          break;
-                        case 'revealed_other':
-                          content = wrapper
-                            .contents()
-                            .toArray()
-                            .map(e =>
-                              $(e)
-                                .contents()
-                                .toArray()
-                                .map(e =>
-                                  (e.nodeType === 1 && e.matches('br'))
-                                    ? '\n'
-                                    : e.textContent.replace(/^　+|\n/g, '')
-                                )
-                                .join('')
-                            )
-                            .join('\n\n\n')
-                            .replace(/\n\n/g, '\n')
-                            .replace(/\n{2,}/g, '\n\n')
-                            .trim();
-                          type = 'other';
-                          break;
-                        case 'revealed_album':
-                          content = $(e)
-                            .find(
-                              'div.revealed_album>div.revealed_album_list li'
-                            )
-                            .toArray()
-                            .map(
-                              (e, i) =>
-                                `${$(e).attr('title')}：${$(e).attr(
-                                  'imgabstract'
-                                )}`
-                            );
-                          type = 'album';
-                          break;
-                        case 'revealed_news':
-                          content = $(e)
-                            .find('h3>a')
-                            .attr('href');
-                          type = 'news';
-                          break;
-                      }
-                      return [
-                        $(e)
-                          .find('h4')
-                          .text()
-                          .trim()
-                          .toLowerCase() || type + i,
-                        {
-                          title: $(e)
-                            .find('h3')
-                            .text()
-                            .trim(),
-                          content: content,
-                          type: type
-                        }
-                      ];
-                    })
-                )
-              );
-            } else if (x.status === 521) {
-              try {
-                const jsCode = $$(x.responseText)
-                  .filter('script')
-                  .text()
-                  .trim()
-                  .replace(/(\w+) s?= ?"(.+?)".+?eval\(\1\);/, '$2')
-                  .replace(
-                    /eval\(".+?\((.+?)\).*?"\)/,
-                    `return $1.match(/document\.cookie\s?=\s?'([^;]+?); /)[1]`
-                  );
-                const inputArg = parseInt(jsCode.match(/\w+\((\d+)\)/)[1]);
-                const inputPar = jsCode.match(/function[^(]+\((\w+)\)/)[1];
-                const funBody = jsCode
-                  .match(/function.+?{(.+)}/)[1]
-                  .replace(inputPar, inputArg);
-                const fun = new Function(funBody);
-                const cookies = fun();
-                resolve(getBehindTheScene(ID, cookies));
-              } catch (e) {
-                console.warn(e);
-                resolve(null);
-              }
-            } else {
-              console.warn(x);
+          onload: (x) => {
+            try {
+              resolve(x.response.data.dataBankEntry);
+            } catch (e) {
+              console.warn(e);
               resolve(null);
             }
           },
-          ontimeout: e => {
+          ontimeout: (e) => {
             console.warn(e);
             resolve(null);
           },
-          onerror: e => {
+          onerror: (e) => {
             console.warn(e);
             resolve(null);
-          }
+          },
         });
       });
     } else {
@@ -852,32 +725,31 @@
     concurrentFetches.push(
       // IMDb Fetch
       getIMDbID()
-        .then(e => {
+        .then((e) => {
           IMDbID = e;
           return getIMDbScore(IMDbID);
         })
-        .then(e => {
+        .then((e) => {
           IMDbScore = e;
         }),
 
       // Awards Fetch
-      getAwards(DoubanID).then(e => {
+      getAwards(DoubanID).then((e) => {
         awards = e;
       }),
 
       // Celebrities Fetch
-      getCelebrities(DoubanID).then(e => {
+      getCelebrities(DoubanID).then((e) => {
         celebrities = e;
       }),
 
       // MTime
-      /* 时光网接口关闭，暂时去掉时光网信息
+      // 更换时光网接口
       MtimeSearch(titles.chineseTitle, year)
-        .then(e => (e ? getBehindTheScene(e.MovieId) : null))
-        .then(e => {
+        .then((e) => (e ? getBehindTheScene(e.movieId) : null))
+        .then((e) => {
           behindTheScene = e;
         })
-      */
     );
 
     await Promise.all(concurrentFetches);
@@ -920,121 +792,195 @@
       awards: awards,
       celebrities: celebrities,
       description: description,
-      behindTheScene: behindTheScene
+      behindTheScene: behindTheScene,
     };
   }
 
   function formatInfo(info) {
     let temp;
     const infoText = (
-      (info.poster ? `[img]${info.poster}[/img]\n\n` : '') +
-      '◎译　　名　' + [info.titles.translatedTitle].concat(info.titles.alsoKnownAsTitles).join(' / ') + '\n' +
-      '◎片　　名　' + info.titles.originalTitle + '\n' +
-      '◎年　　代　' + info.year + '\n' +
-      (info.regions.length ? '◎产　　地　' + info.regions.join(' / ') + '\n' : '') +
-      (info.genres.length ? '◎类　　别　' + info.genres.join(' / ') + '\n' : '') +
-      (info.languages.length ? '◎语　　言　' + info.languages.join(' / ') + '\n' : '') +
-      (info.releaseDates.length ? '◎上映日期　' + info.releaseDates.join(' / ') + '\n' : '') +
-      ((info.IMDbScore &&
-        info.IMDbScore.rating) ? `◎IMDb评星  ${
-       temp = Math.round(info.IMDbScore.rating),
-       '★'.repeat(temp) + '␣'.repeat(10 - temp)
-       }\n◎IMDb评分  ${Number(info.IMDbScore.rating).toFixed(1)}/10 from ${addComma(info.IMDbScore.ratingCount)} users\n` : '') +
-      (info.IMDbID ? `◎IMDb链接  https://www.imdb.com/title/tt${info.IMDbID}/\n` : '') +
-      ((info.DoubanScore &&
-       info.DoubanScore.rating) ? `◎豆瓣评星　${
-       temp = Math.round(info.DoubanScore.rating),
-       '★'.repeat(Math.floor(temp / 2)) + (temp % 2 ? '☆' : '') + '␣'.repeat(5 - Math.ceil(temp / 2))
-       }\n◎豆瓣评分　${info.DoubanScore.rating}/10 from ${addComma(info.DoubanScore.ratingCount)} users\n` : '') +
-      (info.DoubanID ? `◎豆瓣链接　https://movie.douban.com/subject/${info.DoubanID}/\n` : '') +
-      ((info.durations &&
-        info.durations.length) ? '◎片　　长　' + info.durations.join(' / ') + '\n' : '') +
-      (info.episodeDuration ? '◎单集片长　' + info.episodeDuration + '\n' : '') +
-      (info.episodeCount ? '◎集　　数　' + info.episodeCount + '\n' : '') +
-      (info.celebrities ? Object.entries(info.celebrities).map(e => {
-        const position = e[1].position;
-        let title = '◎';
-        switch (position.length) {
-          case 1:
-            title += '　  ' + position + '　  　';
-            break;
-          case 2:
-            title += position.split('').join('　　') + '　';
-            break;
-          case 3:
-            title += position.split('').join('  ') + '　';
-            break;
-          case 4:
-            title += position + '　';
-            break;
-          default:
-            title += position + '\n　　　　　　';
-        }
-        const people = e[1].people.map((f, i) => {
-          const name = f.name.chs ? (f.name.for ? f.name.chs + ' / ' + f.name.for : f.name.chs) : f.name.for;
-          return (i > 0 ? '　　　　　　' : '') + name + (f.character ? ` | ${f.character}` : '');
-        }).join('\n');
-        return title + people;
-      }).join('\n') + '\n\n' : '') +
-      (info.tags.length ? '◎标　　签　' + info.tags.join(' | ') + '\n\n' : '') +
-      (info.description ? '◎简　　介　\n' + info.description.replace(/^|\n/g, '\n　　') + '\n\n' : '') +
-      (info.awards.length ? '◎获奖情况　\n\n' + info.awards.map(e => {
-        const awardName = '　　' + e.name + ' (' + e.year + ')\n';
-        const awardItems = e.awards.map(e => '　　' + e.name + (e.people ? ' ' + e.people : '')).join('\n');
-        return awardName + awardItems;
-      }).join('\n\n') + '\n\n' : '') +
-      (info.behindTheScene ? Object.entries(info.behindTheScene).map(e => {
-        const title = '◎' + e[1].title + '\n\n';
-        let content;
-        switch (e[1].type) {
-          case 'list':
-          case 'lines':
-            content = '　　✰' + e[1].content.join('\n　　✰');
-            break;
-          default:
-            content = '　　' + e[1].content.replace(/\n/g, '\n　　');
-        }
-        return title + content;
-      }).join('\n\n') + '\n\n' : '')
+      (info.poster ? `[img]${info.poster}[/img]\n\n` : "") +
+      "◎译　　名　" +
+      [info.titles.translatedTitle]
+        .concat(info.titles.alsoKnownAsTitles)
+        .join(" / ") +
+      "\n" +
+      "◎片　　名　" +
+      info.titles.originalTitle +
+      "\n" +
+      "◎年　　代　" +
+      info.year +
+      "\n" +
+      (info.regions.length
+        ? "◎产　　地　" + info.regions.join(" / ") + "\n"
+        : "") +
+      (info.genres.length
+        ? "◎类　　别　" + info.genres.join(" / ") + "\n"
+        : "") +
+      (info.languages.length
+        ? "◎语　　言　" + info.languages.join(" / ") + "\n"
+        : "") +
+      (info.releaseDates.length
+        ? "◎上映日期　" + info.releaseDates.join(" / ") + "\n"
+        : "") +
+      (info.IMDbScore && info.IMDbScore.rating
+        ? `◎IMDb评星  ${
+            ((temp = Math.round(info.IMDbScore.rating / 0.25)),
+            "🌕".repeat(Math.floor(temp / 4)) +
+              (temp % 4 === 1
+                ? "🌘"
+                : temp % 4 === 2
+                ? "🌗"
+                : temp % 4 == 3
+                ? "🌖"
+                : "") +
+              "🌑".repeat(10 - Math.ceil(temp / 4)))
+          }\n◎IMDb评分  ${Number(info.IMDbScore.rating).toFixed(
+            1
+          )}/10 from ${addComma(info.IMDbScore.ratingCount)} users\n`
+        : "") +
+      (info.IMDbID
+        ? `◎IMDb链接  https://www.imdb.com/title/tt${info.IMDbID}/\n`
+        : "") +
+      (info.DoubanScore && info.DoubanScore.rating
+        ? `◎豆瓣评星　${
+            ((temp = Math.round(info.DoubanScore.rating / 0.5)),
+            "🌕".repeat(Math.floor(temp / 4)) +
+              (temp % 4 === 1
+                ? "🌘"
+                : temp % 4 === 2
+                ? "🌗"
+                : temp % 4 == 3
+                ? "🌖"
+                : "") +
+              "🌑".repeat(5 - Math.ceil(temp / 4)))
+          }\n◎豆瓣评分　${Number(info.DoubanScore.rating).toFixed(
+            1
+          )}/10 from ${addComma(info.DoubanScore.ratingCount)} users\n`
+        : "") +
+      (info.DoubanID
+        ? `◎豆瓣链接　https://movie.douban.com/subject/${info.DoubanID}/\n`
+        : "") +
+      (info.durations && info.durations.length
+        ? "◎片　　长　" + info.durations.join(" / ") + "\n"
+        : "") +
+      (info.episodeDuration
+        ? "◎单集片长　" + info.episodeDuration + "\n"
+        : "") +
+      (info.episodeCount ? "◎集　　数　" + info.episodeCount + "\n" : "") +
+      (info.celebrities
+        ? Object.entries(info.celebrities)
+            .map((e) => {
+              const position = e[1].position;
+              let title = "◎";
+              switch (position.length) {
+                case 1:
+                  title += "　  " + position + "　  　";
+                  break;
+                case 2:
+                  title += position.split("").join("　　") + "　";
+                  break;
+                case 3:
+                  title += position.split("").join("  ") + "　";
+                  break;
+                case 4:
+                  title += position + "　";
+                  break;
+                default:
+                  title += position + "\n　　　　　　";
+              }
+              const people = e[1].people
+                .map((f, i) => {
+                  const name = f.name.chs
+                    ? f.name.for
+                      ? f.name.chs + " / " + f.name.for
+                      : f.name.chs
+                    : f.name.for;
+                  return (
+                    (i > 0 ? "　　　　　　" : "") +
+                    name +
+                    (f.character ? ` | ${f.character}` : "")
+                  );
+                })
+                .join("\n");
+              return title + people;
+            })
+            .join("\n") + "\n\n"
+        : "") +
+      (info.tags.length ? "◎标　　签　" + info.tags.join(" | ") + "\n\n" : "") +
+      (info.description
+        ? "◎简　　介　\n" + info.description.replace(/^|\n/g, "\n　　") + "\n\n"
+        : "") +
+      (info.awards.length
+        ? "◎获奖情况　\n\n" +
+          info.awards
+            .map((e) => {
+              const awardName = "　　" + e.name + " (" + e.year + ")\n";
+              const awardItems = e.awards
+                .map((e) => "　　" + e.name + (e.people ? " " + e.people : ""))
+                .join("\n");
+              return awardName + awardItems;
+            })
+            .join("\n\n") +
+          "\n\n"
+        : "") +
+      (info.behindTheScene
+        ? (info.behindTheScene.classicLineList &&
+          info.behindTheScene.classicLineList.length > 0
+            ? "◎台词金句\n\n　　" +
+              info.behindTheScene.classicLineList
+                .map((e) => e.replace(/\r?\n/g, "\n　　"))
+                .join("\n　　") +
+              "\n\n"
+            : "") +
+          (info.behindTheScene.behindTextList &&
+          info.behindTheScene.behindTextList.length > 0
+            ? "◎幕后揭秘\n\n　　" +
+              info.behindTheScene.behindTextList
+                .map((e) =>
+                  decodeEntities(e)
+                    .replace(/<.+?>/g, "")
+                    .replace(/　　/g, "\n\n　　")
+                    .trim()
+                )
+                .join("\n\n　　") +
+              "\n\n"
+            : "")
+        : "")
     ).trim();
     return infoText;
   }
 
-  $('body').append($copyPaste);
-  $('#info')
-    .append($toggle)
-    .append(' ')
-    .append($infoGen)
-    .append($message);
+  $("body").append($copyPaste);
+  $("#info").append($toggle).append(" ").append($infoGen).append($message);
   $infoGen.state = 0;
-  const infoGenClickEvent = async e => {
+  const infoGenClickEvent = async (e) => {
     switch ($infoGen.state) {
       case 0: //获取
-        $infoGen.off('click');
-        $infoGen.text('获取中...');
+        $infoGen.off("click");
+        $infoGen.text("获取中...");
         $copyPaste.val(formatInfo(await getInfo()));
         $infoGen.state = 1;
-        $infoGen.text('复制');
-        $infoGen.on('click', infoGenClickEvent);
+        $infoGen.text("复制");
+        $infoGen.on("click", infoGenClickEvent);
         break;
       case 1: //复制
         {
           const copyResult = jsCopy($copyPaste[0]);
           if (copyResult) {
             $message
-              .css({ color: 'green' })
-              .text('复制成功')
+              .css({ color: "green" })
+              .text("复制成功")
               .fadeIn(200, () => $message.fadeOut(200));
-          }
-          else {
+          } else {
             $message
-              .css({ color: 'red' })
-              .text('复制失败')
+              .css({ color: "red" })
+              .text("复制失败")
               .fadeIn(200, () => $message.fadeOut(200));
           }
         }
         break;
     }
   };
-  $infoGen.on('click', infoGenClickEvent);
+  $infoGen.on("click", infoGenClickEvent);
 })(window.$.noConflict(true));
