@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name               电影信息查询脚本
 // @description        Fetch Douban Description, IMDb information for PT upload
-// @version            3.7.6.1
+// @version            3.7.7
 // @author             Secant(TYT@NexusHD)
 // @include            http*://movie.douban.com/subject/*
 // @require            https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js
@@ -826,9 +826,9 @@
       (info.IMDbScore && info.IMDbScore.rating
         ? `◎IMDb评星  ${
             ((temp = Math.round(info.IMDbScore.rating * 2)),
-            "▲".repeat(Math.floor(temp / 2)) +
-              (temp % 2 === 1 ? "◭" : "") +
-              "◬".repeat(10 - Math.ceil(temp / 2)))
+            "★".repeat(Math.floor(temp / 2)) +
+              (temp % 2 === 1 ? "✦" : "") +
+              "☆".repeat(10 - Math.ceil(temp / 2)))
           }\n◎IMDb评分  ${Number(info.IMDbScore.rating).toFixed(
             1
           )}/10 from ${addComma(info.IMDbScore.ratingCount)} users\n`
@@ -839,9 +839,9 @@
       (info.DoubanScore && info.DoubanScore.rating
         ? `◎豆瓣评星　${
             ((temp = Math.round(info.DoubanScore.rating)),
-            "▲".repeat(Math.floor(temp / 2)) +
-              (temp % 2 === 1 ? "◭" : "") +
-              "◬".repeat(5 - Math.ceil(temp / 2)))
+            "★".repeat(Math.floor(temp / 2)) +
+              (temp % 2 === 1 ? "✦" : "") +
+              "☆".repeat(5 - Math.ceil(temp / 2)))
           }\n◎豆瓣评分　${Number(info.DoubanScore.rating).toFixed(
             1
           )}/10 from ${addComma(info.DoubanScore.ratingCount)} users\n`
