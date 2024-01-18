@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name               电影信息查询脚本
 // @description        Fetch Douban Description, IMDb information for PT upload
-// @version            3.7.9
+// @version            3.7.10
 // @author             Secant(TYT@NexusHD)
 // @include            http*://movie.douban.com/subject/*
 // @require            https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js
 // @icon               https://movie.douban.com/favicon.ico
 // @contributionURL    https://i.loli.net/2020/02/28/JPGgHc3UMwXedhv.jpg
 // @contributionAmount 10
-// @namespace          https://greasyfork.org/users/152136
+// @namespace          https://greasyfork.org/users/152136    obsolete!!!
 // @grant              GM_xmlhttpRequest
 // @connect            front-gateway.mtime.cn
 // @connect            api.douban.com
@@ -367,68 +367,49 @@
       return null;
     }
   }
-  async function getIMDbID(timeout = TIMEOUT) {
-    const $season = $("#season");
-    try {
-      if ($season[0] && $season.find(":selected")[0].innerText !== "1") {
-        const DoubanID = $season.find("option:first-of-type").val();
-        const resp = await Promise.race([
-          fetch(`https://movie.douban.com/subject/${DoubanID}`),
-          new Promise((resolve) =>
-            setTimeout(() => {
-              resolve({
-                ok: false,
-                message: `fetch ${DoubanID} douban page time out`,
-              });
-            }, timeout)
-          ),
-        ]);
-        if (resp.ok) {
-          const htmlString = await resp.text();
-          return $$(htmlString)
-            .find('#info .pl:contains("IMDb:")')[0]
-            .nextSibling.textContent.match(/tt(\d+)/)[1];
-        } else {
-          console.warn(resp);
-          return null;
+  function getURL_GM(url, headers, data) {
+    return new Promise(resolve => GM.xmlHttpRequest({
+        method: data ? 'POST' : 'GET',
+        url: url,
+        headers: headers,
+        data: data,
+        onload: function (response) {
+            if (response.status >= 200 && response.status < 400) {
+                resolve(response.responseText);
+            } else {
+                console.error(`Error getting ${url}:`, response.status, response.statusText, response.responseText);
+                resolve();
+            }
+        },
+        onerror: function (response) {
+            console.error(`Error during GM.xmlHttpRequest to ${url}:`, response.statusText);
+            resolve();
         }
-      } else {
-        return $(
-          '#info .pl:contains("IMDb:")'
-        )[0].nextSibling.textContent.match(/tt(\d+)/)[1];
-      }
-    } catch (e) {
-      return null;
+    }));
+  }
+  async function getJSONP_GM(url, headers, post_data) {
+    const data = await getURL_GM(url, headers, post_data);
+    if (data) {
+        const end = data.lastIndexOf(')');
+        const [, json] = data.substring(0, end).split('(', 2);
+        return JSON.parse(json);
     }
+  }
+  async function getIMDbID(timeout = TIMEOUT) {
+    const imdb_text = [...document.querySelectorAll('#info > span.pl')].find(s => s.innerText.trim() == 'IMDb:');
+      if (!imdb_text) {
+          console.log('IMDb id not available');
+          return;
+      } 
+      const text_node = imdb_text.nextSibling.nextSibling;
+      const id = text_node.textContent.trim();
+      return id;
   }
   async function getIMDbScore(ID, timeout = TIMEOUT) {
     if (ID) {
-      return new Promise((resolve) => {
-        GM_xmlhttpRequest({
-          method: "GET",
-          // p.media-imdb.com: HTTPS -> HTTP
-          url: `http://p.media-imdb.com/static-content/documents/v1/title/tt${ID}/ratings%3Fjsonp=imdb.rating.run:imdb.api.title.ratings/data.json`,
-          // url: `https://proxy.secant.workers.dev/worker/proxy/p.media-imdb.com/static-content/documents/v1/title/tt${ID}/ratings%253Fjsonp=imdb.rating.run:imdb.api.title.ratings/data.json`,
-          timout: timeout,
-          onload: (x) => {
-            try {
-              const e = JSON.parse(x.responseText.slice(16, -1));
-              resolve(e.resource);
-            } catch (e) {
-              console.warn(e);
-              resolve(null);
-            }
-          },
-          ontimeout: (e) => {
-            console.warn(e);
-            resolve(null);
-          },
-          onerror: (e) => {
-            console.warn(e);
-            resolve(null);
-          },
-        });
-      });
+      const imdb_url = `https://p.media-imdb.com/static-content/documents/v1/title/${ID}/ratings%3Fjsonp=imdb.rating.run:imdb.api.title.ratings/data.json`;
+      let [imdb_data] = await Promise.all([getJSONP_GM(imdb_url)]);
+      return imdb_data.resource;
     } else {
       return null;
     }
@@ -822,17 +803,17 @@
         ? "◎上映日期　" + info.releaseDates.join(" / ") + "\n"
         : "") +
       (info.IMDbScore && info.IMDbScore.rating
-        ? `◎IMDb评星  ${
+        ? `◎IMDb评星　${
             ((temp = Math.round(info.IMDbScore.rating * 2)),
             "★".repeat(Math.floor(temp / 2)) +
               (temp % 2 === 1 ? "✦" : "") +
               "☆".repeat(10 - Math.ceil(temp / 2)))
-          }\n◎IMDb评分  ${Number(info.IMDbScore.rating).toFixed(
+          }\n◎IMDb评分　 ${Number(info.IMDbScore.rating).toFixed(
             1
           )}/10 from ${addComma(info.IMDbScore.ratingCount)} users\n`
         : "") +
       (info.IMDbID
-        ? `◎IMDb链接  https://www.imdb.com/title/tt${info.IMDbID}/\n`
+        ? `◎IMDb链接　https://www.imdb.com/title/tt${info.IMDbID}/\n`
         : "") +
       (info.DoubanScore && info.DoubanScore.rating
         ? `◎豆瓣评星　${
