@@ -808,7 +808,7 @@
             "★".repeat(Math.floor(temp / 2)) +
               (temp % 2 === 1 ? "✦" : "") +
               "☆".repeat(10 - Math.ceil(temp / 2)))
-          }\n◎IMDb评分　 ${Number(info.IMDbScore.rating).toFixed(
+          }\n◎IMDb评分　${Number(info.IMDbScore.rating).toFixed(
             1
           )}/10 from ${addComma(info.IMDbScore.ratingCount)} users\n`
         : "") +
