@@ -8,7 +8,7 @@
 // @icon               https://movie.douban.com/favicon.ico
 // @contributionURL    https://i.loli.net/2020/02/28/JPGgHc3UMwXedhv.jpg
 // @contributionAmount 10
-// @namespace          https://greasyfork.org/users/152136    obsolete!!!
+// @namespace          https://greasyfork.org/users/152136
 // @grant              GM_xmlhttpRequest
 // @connect            front-gateway.mtime.cn
 // @connect            api.douban.com
