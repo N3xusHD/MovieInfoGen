@@ -32,7 +32,7 @@
   (function (b, e) {
     const f = function (g) {
       while (--g) {
-        b["push"](b["shift"]());
+        b.push(b.shift());
       }
     };
     f(++e);
@@ -40,7 +40,7 @@
   const b = function (c, d) {
     c = c - 0x0;
     let e = a[c];
-    if (b["pbhcos"] === undefined) {
+    if (b.pbhcos === undefined) {
       (function () {
         const g =
           typeof window !== "undefined"
@@ -52,40 +52,40 @@
             : this;
         const h =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-        g["atob"] ||
-          (g["atob"] = function (i) {
-            const j = String(i)["replace"](/=+$/, "");
+        g.atob ||
+          (g.atob = function (i) {
+            const j = String(i).replace(/=+$/, "");
             let k = "";
             for (
               let l = 0x0, m, n, o = 0x0;
-              (n = j["charAt"](o++));
+              (n = j.charAt(o++));
               ~n && ((m = l % 0x4 ? m * 0x40 + n : n), l++ % 0x4)
-                ? (k += String["fromCharCode"](
+                ? (k += String.fromCharCode(
                     0xff & (m >> ((-0x2 * l) & 0x6))
                   ))
                 : 0x0
             ) {
-              n = h["indexOf"](n);
+              n = h.indexOf(n);
             }
             return k;
           });
       })();
-      b["ICpnUS"] = function (g) {
+      b.ICpnUS = function (g) {
         const h = atob(g);
         let j = [];
-        for (let k = 0x0, l = h["length"]; k < l; k++) {
+        for (let k = 0x0, l = h.length; k < l; k++) {
           j +=
-            "%" + ("00" + h["charCodeAt"](k)["toString"](0x10))["slice"](-0x2);
+            "%" + ("00" + h.charCodeAt(k).toString(0x10)).slice(-0x2);
         }
         return decodeURIComponent(j);
       };
-      b["Snsmje"] = {};
-      b["pbhcos"] = !![];
+      b.Snsmje = {};
+      b.pbhcos = !![];
     }
-    const f = b["Snsmje"][c];
+    const f = b.Snsmje[c];
     if (f === undefined) {
-      e = b["ICpnUS"](e);
-      b["Snsmje"][c] = e;
+      e = b.ICpnUS(e);
+      b.Snsmje[c] = e;
     } else {
       e = f;
     }
@@ -367,7 +367,7 @@
       return null;
     }
   }
-  function getURL_GM(url, headers, data) {
+  async function getURL_GM(url, headers, data) {
     return new Promise(resolve => GM.xmlHttpRequest({
         method: data ? 'POST' : 'GET',
         url: url,
@@ -400,7 +400,7 @@
       if (!imdb_text) {
           console.log('IMDb id not available');
           return;
-      } 
+      }
       const text_node = imdb_text.nextSibling.nextSibling;
       const id = text_node.textContent.trim();
       return id;
