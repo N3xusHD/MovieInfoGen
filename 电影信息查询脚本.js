@@ -48,8 +48,8 @@
             : typeof process === "object" &&
               typeof require === "function" &&
               typeof global === "object"
-              ? global
-              : this;
+                ? global
+                : this;
         const h =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         g.atob ||
