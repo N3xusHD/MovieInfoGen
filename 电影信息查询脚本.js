@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name               电影信息查询脚本
 // @description        Fetch Douban Description, IMDb information for PT upload
-// @version            3.7.9
+// @version            3.7.10
 // @author             Secant(TYT@NexusHD)
 // @include            http*://movie.douban.com/subject/*
 // @require            https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js
@@ -32,7 +32,7 @@
   (function (b, e) {
     const f = function (g) {
       while (--g) {
-        b["push"](b["shift"]());
+        b.push(b.shift());
       }
     };
     f(++e);
@@ -40,7 +40,7 @@
   const b = function (c, d) {
     c = c - 0x0;
     let e = a[c];
-    if (b["pbhcos"] === undefined) {
+    if (b.pbhcos === undefined) {
       (function () {
         const g =
           typeof window !== "undefined"
@@ -48,44 +48,44 @@
             : typeof process === "object" &&
               typeof require === "function" &&
               typeof global === "object"
-            ? global
-            : this;
+              ? global
+              : this;
         const h =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-        g["atob"] ||
-          (g["atob"] = function (i) {
-            const j = String(i)["replace"](/=+$/, "");
+        g.atob ||
+          (g.atob = function (i) {
+            const j = String(i).replace(/=+$/, "");
             let k = "";
             for (
               let l = 0x0, m, n, o = 0x0;
-              (n = j["charAt"](o++));
+              (n = j.charAt(o++));
               ~n && ((m = l % 0x4 ? m * 0x40 + n : n), l++ % 0x4)
-                ? (k += String["fromCharCode"](
-                    0xff & (m >> ((-0x2 * l) & 0x6))
-                  ))
+                ? (k += String.fromCharCode(
+                  0xff & (m >> ((-0x2 * l) & 0x6))
+                ))
                 : 0x0
             ) {
-              n = h["indexOf"](n);
+              n = h.indexOf(n);
             }
             return k;
           });
       })();
-      b["ICpnUS"] = function (g) {
+      b.ICpnUS = function (g) {
         const h = atob(g);
         let j = [];
-        for (let k = 0x0, l = h["length"]; k < l; k++) {
+        for (let k = 0x0, l = h.length; k < l; k++) {
           j +=
-            "%" + ("00" + h["charCodeAt"](k)["toString"](0x10))["slice"](-0x2);
+            "%" + ("00" + h.charCodeAt(k).toString(0x10)).slice(-0x2);
         }
         return decodeURIComponent(j);
       };
-      b["Snsmje"] = {};
-      b["pbhcos"] = !![];
+      b.Snsmje = {};
+      b.pbhcos = !![];
     }
-    const f = b["Snsmje"][c];
+    const f = b.Snsmje[c];
     if (f === undefined) {
-      e = b["ICpnUS"](e);
-      b["Snsmje"][c] = e;
+      e = b.ICpnUS(e);
+      b.Snsmje[c] = e;
     } else {
       e = f;
     }
@@ -168,8 +168,8 @@
         .split(" / ");
       const transTitle = isChinese
         ? akaTitles.find((e) => {
-            return e.match(/[a-z]/i);
-          }) || chineseTitle
+          return e.match(/[a-z]/i);
+        }) || chineseTitle
         : chineseTitle;
       const priority = (e) => {
         if (e === transTitle) {
@@ -367,68 +367,49 @@
       return null;
     }
   }
-  async function getIMDbID(timeout = TIMEOUT) {
-    const $season = $("#season");
-    try {
-      if ($season[0] && $season.find(":selected")[0].innerText !== "1") {
-        const DoubanID = $season.find("option:first-of-type").val();
-        const resp = await Promise.race([
-          fetch(`https://movie.douban.com/subject/${DoubanID}`),
-          new Promise((resolve) =>
-            setTimeout(() => {
-              resolve({
-                ok: false,
-                message: `fetch ${DoubanID} douban page time out`,
-              });
-            }, timeout)
-          ),
-        ]);
-        if (resp.ok) {
-          const htmlString = await resp.text();
-          return $$(htmlString)
-            .find('#info .pl:contains("IMDb:")')[0]
-            .nextSibling.textContent.match(/tt(\d+)/)[1];
+  async function getURL_GM(url, headers, data) {
+    return new Promise(resolve => GM.xmlHttpRequest({
+      method: data ? 'POST' : 'GET',
+      url: url,
+      headers: headers,
+      data: data,
+      onload: function (response) {
+        if (response.status >= 200 && response.status < 400) {
+          resolve(response.responseText);
         } else {
-          console.warn(resp);
-          return null;
+          console.error(`Error getting ${url}:`, response.status, response.statusText, response.responseText);
+          resolve();
         }
-      } else {
-        return $(
-          '#info .pl:contains("IMDb:")'
-        )[0].nextSibling.textContent.match(/tt(\d+)/)[1];
+      },
+      onerror: function (response) {
+        console.error(`Error during GM.xmlHttpRequest to ${url}:`, response.statusText);
+        resolve();
       }
-    } catch (e) {
-      return null;
+    }));
+  }
+  async function getJSONP_GM(url, headers, post_data) {
+    const data = await getURL_GM(url, headers, post_data);
+    if (data) {
+      const end = data.lastIndexOf(')');
+      const [, json] = data.substring(0, end).split('(', 2);
+      return JSON.parse(json);
     }
+  }
+  async function getIMDbID(timeout = TIMEOUT) {
+    const imdb_text = [...document.querySelectorAll('#info > span.pl')].find(s => s.innerText.trim() == 'IMDb:');
+    if (!imdb_text) {
+      console.log('IMDb id not available');
+      return;
+    }
+    const text_node = imdb_text.nextSibling.nextSibling;
+    const id = text_node.textContent.trim();
+    return id;
   }
   async function getIMDbScore(ID, timeout = TIMEOUT) {
     if (ID) {
-      return new Promise((resolve) => {
-        GM_xmlhttpRequest({
-          method: "GET",
-          // p.media-imdb.com: HTTPS -> HTTP
-          url: `http://p.media-imdb.com/static-content/documents/v1/title/tt${ID}/ratings%3Fjsonp=imdb.rating.run:imdb.api.title.ratings/data.json`,
-          // url: `https://proxy.secant.workers.dev/worker/proxy/p.media-imdb.com/static-content/documents/v1/title/tt${ID}/ratings%253Fjsonp=imdb.rating.run:imdb.api.title.ratings/data.json`,
-          timout: timeout,
-          onload: (x) => {
-            try {
-              const e = JSON.parse(x.responseText.slice(16, -1));
-              resolve(e.resource);
-            } catch (e) {
-              console.warn(e);
-              resolve(null);
-            }
-          },
-          ontimeout: (e) => {
-            console.warn(e);
-            resolve(null);
-          },
-          onerror: (e) => {
-            console.warn(e);
-            resolve(null);
-          },
-        });
-      });
+      const imdb_url = `https://p.media-imdb.com/static-content/documents/v1/title/${ID}/ratings%3Fjsonp=imdb.rating.run:imdb.api.title.ratings/data.json`;
+      let [imdb_data] = await Promise.all([getJSONP_GM(imdb_url)]);
+      return imdb_data.resource;
     } else {
       return null;
     }
@@ -822,27 +803,25 @@
         ? "◎上映日期　" + info.releaseDates.join(" / ") + "\n"
         : "") +
       (info.IMDbScore && info.IMDbScore.rating
-        ? `◎IMDb评星  ${
-            ((temp = Math.round(info.IMDbScore.rating * 2)),
-            "★".repeat(Math.floor(temp / 2)) +
-              (temp % 2 === 1 ? "✦" : "") +
-              "☆".repeat(10 - Math.ceil(temp / 2)))
-          }\n◎IMDb评分  ${Number(info.IMDbScore.rating).toFixed(
-            1
-          )}/10 from ${addComma(info.IMDbScore.ratingCount)} users\n`
+        ? `◎IMDb评星　${((temp = Math.round(info.IMDbScore.rating * 2)),
+          "★".repeat(Math.floor(temp / 2)) +
+          (temp % 2 === 1 ? "✦" : "") +
+          "☆".repeat(10 - Math.ceil(temp / 2)))
+        }\n◎IMDb评分　${Number(info.IMDbScore.rating).toFixed(
+          1
+        )}/10 from ${addComma(info.IMDbScore.ratingCount)} users\n`
         : "") +
       (info.IMDbID
-        ? `◎IMDb链接  https://www.imdb.com/title/tt${info.IMDbID}/\n`
+        ? `◎IMDb链接　https://www.imdb.com/title/tt${info.IMDbID}/\n`
         : "") +
       (info.DoubanScore && info.DoubanScore.rating
-        ? `◎豆瓣评星　${
-            ((temp = Math.round(info.DoubanScore.rating)),
-            "★".repeat(Math.floor(temp / 2)) +
-              (temp % 2 === 1 ? "✦" : "") +
-              "☆".repeat(5 - Math.ceil(temp / 2)))
-          }\n◎豆瓣评分　${Number(info.DoubanScore.rating).toFixed(
-            1
-          )}/10 from ${addComma(info.DoubanScore.ratingCount)} users\n`
+        ? `◎豆瓣评星　${((temp = Math.round(info.DoubanScore.rating)),
+          "★".repeat(Math.floor(temp / 2)) +
+          (temp % 2 === 1 ? "✦" : "") +
+          "☆".repeat(5 - Math.ceil(temp / 2)))
+        }\n◎豆瓣评分　${Number(info.DoubanScore.rating).toFixed(
+          1
+        )}/10 from ${addComma(info.DoubanScore.ratingCount)} users\n`
         : "") +
       (info.DoubanID
         ? `◎豆瓣链接　https://movie.douban.com/subject/${info.DoubanID}/\n`
@@ -856,42 +835,42 @@
       (info.episodeCount ? "◎集　　数　" + info.episodeCount + "\n" : "") +
       (info.celebrities
         ? Object.entries(info.celebrities)
-            .map((e) => {
-              const position = e[1].position;
-              let title = "◎";
-              switch (position.length) {
-                case 1:
-                  title += "　  " + position + "　  　";
-                  break;
-                case 2:
-                  title += position.split("").join("　　") + "　";
-                  break;
-                case 3:
-                  title += position.split("").join("  ") + "　";
-                  break;
-                case 4:
-                  title += position + "　";
-                  break;
-                default:
-                  title += position + "\n　　　　　　";
-              }
-              const people = e[1].people
-                .map((f, i) => {
-                  const name = f.name.chs
-                    ? f.name.for
-                      ? f.name.chs + " / " + f.name.for
-                      : f.name.chs
-                    : f.name.for;
-                  return (
-                    (i > 0 ? "　　　　　　" : "") +
-                    name +
-                    (f.character ? ` | ${f.character}` : "")
-                  );
-                })
-                .join("\n");
-              return title + people;
-            })
-            .join("\n") + "\n\n"
+          .map((e) => {
+            const position = e[1].position;
+            let title = "◎";
+            switch (position.length) {
+              case 1:
+                title += "　  " + position + "　  　";
+                break;
+              case 2:
+                title += position.split("").join("　　") + "　";
+                break;
+              case 3:
+                title += position.split("").join("  ") + "　";
+                break;
+              case 4:
+                title += position + "　";
+                break;
+              default:
+                title += position + "\n　　　　　　";
+            }
+            const people = e[1].people
+              .map((f, i) => {
+                const name = f.name.chs
+                  ? f.name.for
+                    ? f.name.chs + " / " + f.name.for
+                    : f.name.chs
+                  : f.name.for;
+                return (
+                  (i > 0 ? "　　　　　　" : "") +
+                  name +
+                  (f.character ? ` | ${f.character}` : "")
+                );
+              })
+              .join("\n");
+            return title + people;
+          })
+          .join("\n") + "\n\n"
         : "") +
       (info.tags.length ? "◎标　　签　" + info.tags.join(" | ") + "\n\n" : "") +
       (info.description
@@ -899,39 +878,39 @@
         : "") +
       (info.awards.length
         ? "◎获奖情况　\n\n" +
-          info.awards
-            .map((e) => {
-              const awardName = "　　" + e.name + " (" + e.year + ")\n";
-              const awardItems = e.awards
-                .map((e) => "　　" + e.name + (e.people ? " " + e.people : ""))
-                .join("\n");
-              return awardName + awardItems;
-            })
-            .join("\n\n") +
-          "\n\n"
+        info.awards
+          .map((e) => {
+            const awardName = "　　" + e.name + " (" + e.year + ")\n";
+            const awardItems = e.awards
+              .map((e) => "　　" + e.name + (e.people ? " " + e.people : ""))
+              .join("\n");
+            return awardName + awardItems;
+          })
+          .join("\n\n") +
+        "\n\n"
         : "") +
       (info.behindTheScene
         ? (info.behindTheScene.classicLineList &&
           info.behindTheScene.classicLineList.length > 0
-            ? "◎台词金句\n\n　　" +
-              info.behindTheScene.classicLineList
-                .map((e) => e.replace(/\r?\n/g, "\n　　"))
-                .join("\n　　") +
-              "\n\n"
-            : "") +
-          (info.behindTheScene.behindTextList &&
+          ? "◎台词金句\n\n　　" +
+          info.behindTheScene.classicLineList
+            .map((e) => e.replace(/\r?\n/g, "\n　　"))
+            .join("\n　　") +
+          "\n\n"
+          : "") +
+        (info.behindTheScene.behindTextList &&
           info.behindTheScene.behindTextList.length > 0
-            ? "◎幕后揭秘\n\n　　" +
-              info.behindTheScene.behindTextList
-                .map((e) =>
-                  decodeEntities(e)
-                    .replace(/<.+?>/g, "")
-                    .replace(/　　/g, "\n\n　　")
-                    .trim()
-                )
-                .join("\n\n　　") +
-              "\n\n"
-            : "")
+          ? "◎幕后揭秘\n\n　　" +
+          info.behindTheScene.behindTextList
+            .map((e) =>
+              decodeEntities(e)
+                .replace(/<.+?>/g, "")
+                .replace(/　　/g, "\n\n　　")
+                .trim()
+            )
+            .join("\n\n　　") +
+          "\n\n"
+          : "")
         : "")
     ).trim();
     return infoText;
