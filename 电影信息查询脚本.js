@@ -48,8 +48,8 @@
             : typeof process === "object" &&
               typeof require === "function" &&
               typeof global === "object"
-              ? global
-              : this;
+                ? global
+                : this;
         const h =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         g.atob ||
@@ -812,7 +812,7 @@
         )}/10 from ${addComma(info.IMDbScore.ratingCount)} users\n`
         : "") +
       (info.IMDbID
-        ? `◎IMDb链接　https://www.imdb.com/title/tt${info.IMDbID}/\n`
+        ? `◎IMDb链接　https://www.imdb.com/title/${info.IMDbID}/\n`
         : "") +
       (info.DoubanScore && info.DoubanScore.rating
         ? `◎豆瓣评星　${((temp = Math.round(info.DoubanScore.rating)),
