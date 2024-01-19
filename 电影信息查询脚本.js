@@ -48,8 +48,8 @@
             : typeof process === "object" &&
               typeof require === "function" &&
               typeof global === "object"
-            ? global
-            : this;
+              ? global
+              : this;
         const h =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         g.atob ||
@@ -61,8 +61,8 @@
               (n = j.charAt(o++));
               ~n && ((m = l % 0x4 ? m * 0x40 + n : n), l++ % 0x4)
                 ? (k += String.fromCharCode(
-                    0xff & (m >> ((-0x2 * l) & 0x6))
-                  ))
+                  0xff & (m >> ((-0x2 * l) & 0x6))
+                ))
                 : 0x0
             ) {
               n = h.indexOf(n);
@@ -168,8 +168,8 @@
         .split(" / ");
       const transTitle = isChinese
         ? akaTitles.find((e) => {
-            return e.match(/[a-z]/i);
-          }) || chineseTitle
+          return e.match(/[a-z]/i);
+        }) || chineseTitle
         : chineseTitle;
       const priority = (e) => {
         if (e === transTitle) {
@@ -369,41 +369,41 @@
   }
   async function getURL_GM(url, headers, data) {
     return new Promise(resolve => GM.xmlHttpRequest({
-        method: data ? 'POST' : 'GET',
-        url: url,
-        headers: headers,
-        data: data,
-        onload: function (response) {
-            if (response.status >= 200 && response.status < 400) {
-                resolve(response.responseText);
-            } else {
-                console.error(`Error getting ${url}:`, response.status, response.statusText, response.responseText);
-                resolve();
-            }
-        },
-        onerror: function (response) {
-            console.error(`Error during GM.xmlHttpRequest to ${url}:`, response.statusText);
-            resolve();
+      method: data ? 'POST' : 'GET',
+      url: url,
+      headers: headers,
+      data: data,
+      onload: function (response) {
+        if (response.status >= 200 && response.status < 400) {
+          resolve(response.responseText);
+        } else {
+          console.error(`Error getting ${url}:`, response.status, response.statusText, response.responseText);
+          resolve();
         }
+      },
+      onerror: function (response) {
+        console.error(`Error during GM.xmlHttpRequest to ${url}:`, response.statusText);
+        resolve();
+      }
     }));
   }
   async function getJSONP_GM(url, headers, post_data) {
     const data = await getURL_GM(url, headers, post_data);
     if (data) {
-        const end = data.lastIndexOf(')');
-        const [, json] = data.substring(0, end).split('(', 2);
-        return JSON.parse(json);
+      const end = data.lastIndexOf(')');
+      const [, json] = data.substring(0, end).split('(', 2);
+      return JSON.parse(json);
     }
   }
   async function getIMDbID(timeout = TIMEOUT) {
     const imdb_text = [...document.querySelectorAll('#info > span.pl')].find(s => s.innerText.trim() == 'IMDb:');
-      if (!imdb_text) {
-          console.log('IMDb id not available');
-          return;
-      }
-      const text_node = imdb_text.nextSibling.nextSibling;
-      const id = text_node.textContent.trim();
-      return id;
+    if (!imdb_text) {
+      console.log('IMDb id not available');
+      return;
+    }
+    const text_node = imdb_text.nextSibling.nextSibling;
+    const id = text_node.textContent.trim();
+    return id;
   }
   async function getIMDbScore(ID, timeout = TIMEOUT) {
     if (ID) {
@@ -803,27 +803,25 @@
         ? "◎上映日期　" + info.releaseDates.join(" / ") + "\n"
         : "") +
       (info.IMDbScore && info.IMDbScore.rating
-        ? `◎IMDb评星　${
-            ((temp = Math.round(info.IMDbScore.rating * 2)),
-            "★".repeat(Math.floor(temp / 2)) +
-              (temp % 2 === 1 ? "✦" : "") +
-              "☆".repeat(10 - Math.ceil(temp / 2)))
-          }\n◎IMDb评分　${Number(info.IMDbScore.rating).toFixed(
-            1
-          )}/10 from ${addComma(info.IMDbScore.ratingCount)} users\n`
+        ? `◎IMDb评星　${((temp = Math.round(info.IMDbScore.rating * 2)),
+          "★".repeat(Math.floor(temp / 2)) +
+          (temp % 2 === 1 ? "✦" : "") +
+          "☆".repeat(10 - Math.ceil(temp / 2)))
+        }\n◎IMDb评分　${Number(info.IMDbScore.rating).toFixed(
+          1
+        )}/10 from ${addComma(info.IMDbScore.ratingCount)} users\n`
         : "") +
       (info.IMDbID
         ? `◎IMDb链接　https://www.imdb.com/title/tt${info.IMDbID}/\n`
         : "") +
       (info.DoubanScore && info.DoubanScore.rating
-        ? `◎豆瓣评星　${
-            ((temp = Math.round(info.DoubanScore.rating)),
-            "★".repeat(Math.floor(temp / 2)) +
-              (temp % 2 === 1 ? "✦" : "") +
-              "☆".repeat(5 - Math.ceil(temp / 2)))
-          }\n◎豆瓣评分　${Number(info.DoubanScore.rating).toFixed(
-            1
-          )}/10 from ${addComma(info.DoubanScore.ratingCount)} users\n`
+        ? `◎豆瓣评星　${((temp = Math.round(info.DoubanScore.rating)),
+          "★".repeat(Math.floor(temp / 2)) +
+          (temp % 2 === 1 ? "✦" : "") +
+          "☆".repeat(5 - Math.ceil(temp / 2)))
+        }\n◎豆瓣评分　${Number(info.DoubanScore.rating).toFixed(
+          1
+        )}/10 from ${addComma(info.DoubanScore.ratingCount)} users\n`
         : "") +
       (info.DoubanID
         ? `◎豆瓣链接　https://movie.douban.com/subject/${info.DoubanID}/\n`
@@ -837,42 +835,42 @@
       (info.episodeCount ? "◎集　　数　" + info.episodeCount + "\n" : "") +
       (info.celebrities
         ? Object.entries(info.celebrities)
-            .map((e) => {
-              const position = e[1].position;
-              let title = "◎";
-              switch (position.length) {
-                case 1:
-                  title += "　  " + position + "　  　";
-                  break;
-                case 2:
-                  title += position.split("").join("　　") + "　";
-                  break;
-                case 3:
-                  title += position.split("").join("  ") + "　";
-                  break;
-                case 4:
-                  title += position + "　";
-                  break;
-                default:
-                  title += position + "\n　　　　　　";
-              }
-              const people = e[1].people
-                .map((f, i) => {
-                  const name = f.name.chs
-                    ? f.name.for
-                      ? f.name.chs + " / " + f.name.for
-                      : f.name.chs
-                    : f.name.for;
-                  return (
-                    (i > 0 ? "　　　　　　" : "") +
-                    name +
-                    (f.character ? ` | ${f.character}` : "")
-                  );
-                })
-                .join("\n");
-              return title + people;
-            })
-            .join("\n") + "\n\n"
+          .map((e) => {
+            const position = e[1].position;
+            let title = "◎";
+            switch (position.length) {
+              case 1:
+                title += "　  " + position + "　  　";
+                break;
+              case 2:
+                title += position.split("").join("　　") + "　";
+                break;
+              case 3:
+                title += position.split("").join("  ") + "　";
+                break;
+              case 4:
+                title += position + "　";
+                break;
+              default:
+                title += position + "\n　　　　　　";
+            }
+            const people = e[1].people
+              .map((f, i) => {
+                const name = f.name.chs
+                  ? f.name.for
+                    ? f.name.chs + " / " + f.name.for
+                    : f.name.chs
+                  : f.name.for;
+                return (
+                  (i > 0 ? "　　　　　　" : "") +
+                  name +
+                  (f.character ? ` | ${f.character}` : "")
+                );
+              })
+              .join("\n");
+            return title + people;
+          })
+          .join("\n") + "\n\n"
         : "") +
       (info.tags.length ? "◎标　　签　" + info.tags.join(" | ") + "\n\n" : "") +
       (info.description
@@ -880,39 +878,39 @@
         : "") +
       (info.awards.length
         ? "◎获奖情况　\n\n" +
-          info.awards
-            .map((e) => {
-              const awardName = "　　" + e.name + " (" + e.year + ")\n";
-              const awardItems = e.awards
-                .map((e) => "　　" + e.name + (e.people ? " " + e.people : ""))
-                .join("\n");
-              return awardName + awardItems;
-            })
-            .join("\n\n") +
-          "\n\n"
+        info.awards
+          .map((e) => {
+            const awardName = "　　" + e.name + " (" + e.year + ")\n";
+            const awardItems = e.awards
+              .map((e) => "　　" + e.name + (e.people ? " " + e.people : ""))
+              .join("\n");
+            return awardName + awardItems;
+          })
+          .join("\n\n") +
+        "\n\n"
         : "") +
       (info.behindTheScene
         ? (info.behindTheScene.classicLineList &&
           info.behindTheScene.classicLineList.length > 0
-            ? "◎台词金句\n\n　　" +
-              info.behindTheScene.classicLineList
-                .map((e) => e.replace(/\r?\n/g, "\n　　"))
-                .join("\n　　") +
-              "\n\n"
-            : "") +
-          (info.behindTheScene.behindTextList &&
+          ? "◎台词金句\n\n　　" +
+          info.behindTheScene.classicLineList
+            .map((e) => e.replace(/\r?\n/g, "\n　　"))
+            .join("\n　　") +
+          "\n\n"
+          : "") +
+        (info.behindTheScene.behindTextList &&
           info.behindTheScene.behindTextList.length > 0
-            ? "◎幕后揭秘\n\n　　" +
-              info.behindTheScene.behindTextList
-                .map((e) =>
-                  decodeEntities(e)
-                    .replace(/<.+?>/g, "")
-                    .replace(/　　/g, "\n\n　　")
-                    .trim()
-                )
-                .join("\n\n　　") +
-              "\n\n"
-            : "")
+          ? "◎幕后揭秘\n\n　　" +
+          info.behindTheScene.behindTextList
+            .map((e) =>
+              decodeEntities(e)
+                .replace(/<.+?>/g, "")
+                .replace(/　　/g, "\n\n　　")
+                .trim()
+            )
+            .join("\n\n　　") +
+          "\n\n"
+          : "")
         : "")
     ).trim();
     return infoText;
